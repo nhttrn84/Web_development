@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giới Thiệu Hội Nghị</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <style>
+        #success img{
+            margin: 10px 0;
+        }
+        #success .center {
+            text-align: center;
+        }
+
+        #success .codeblock {
+            max-width: 360px;
+            margin: 35px auto;
+            padding-left: 30px;
+            padding-right: 30px;
+            padding-top: 50px;
+            padding-bottom: 50px;
+            background-color: azure;
+        }
+    </style>
+</head>
+<body>
+    <div id="success" class="container">
+        <div class="row-fluid">
+            <div class="codeblock">
+                <div class="alert alert-success" role="alert">
+                    <h4 class="alert-heading">{{message}}: {{statusCode}}</h4>
+                    <p>{{description}}</p>
+                </div>
+            </div><!--/.span12-->
+        </div><!--/.row-fluid-->
+    </div><!--/.container-->
+</body>
+</html>

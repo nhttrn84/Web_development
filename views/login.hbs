@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giới Thiệu Hội Nghị</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <style>
+        #login img{
+            margin: 10px 0;
+        }
+        #login .center {
+            text-align: center;
+        }
+
+        #login .login {
+            max-width: 360px;
+            margin: 35px auto;
+            padding-left: 30px;
+            padding-right: 30px;
+            padding-top: 50px;
+            padding-bottom: 50px;
+            background-color: azure;
+        }
+
+        #login .login-form{
+            padding:0px 25px;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="login" class="container">
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="login well well-small">
+                    <div class="center">
+                        <img src="http://placehold.it/250x100&text=Logo" alt="logo"> 
+                    </div>
+                    <form action="/login" class="login-form" id="UserLoginForm" method="post" accept-charset="utf-8">
+                        <div class="control-group" style="padding-bottom: 10px;">
+                            <div class="input-prepend">
+                            <input name="username" required="required" placeholder="Username" maxlength="255" type="text" id="UserUsername"> 
+                            </div>
+                        </div>
+                        <div class="control-group" style="padding-bottom: 10px;">
+                            <div class="input-prepend">
+                            <input name="password" required="required" placeholder="Password" type="password" id="UserPassword"> 
+                            </div>
+                        </div>
+                        <!---
+                        <div class="control-group">
+                            <label id="remember-me">
+                            <input type="checkbox" name="data[User][remember_me]" value="1" id="UserRememberMe"> Remember Me?</label>
+                        </div>--->
+                        <div class="control-group">
+                            <input class="btn btn-primary btn-large btn-block" type="submit" value="Sign in"> 
+                        </div>
+                    </form>
+                    <div>
+                        <p>Don't have an account, click here: <span id="signup" style="color: red; text-decoration: underline; cursor: pointer;">Register</span></p>
+                    </div>
+                </div><!--/.login-->
+            </div><!--/.span12-->
+        </div><!--/.row-fluid-->
+    </div><!--/.container-->
+</body>
+<script>
+    $('#signup').click(function () {
+        $.ajax({
+            type: 'GET',
+            success: function (response) {
+                window.location.href = '/signup';
+            },
+            error: function (error) {
+                console.error('Error:', error);
+            }
+        });
+    });
+</script>
+</html>

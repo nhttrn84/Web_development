@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QLBH - Chat</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="row justify-content-md-center">Long-Polling</h1>
+        <div id="messages" class="col"></div>
+        <form id="messageForm" class="row justify-content-md-center">
+            <input type="text" id="messageInput" autocomplete="off" />
+            <button type="submit">Gửi</button>
+        </form>
+    </div>
+
+    <script>
+    $(document).ready(function () {
+        const messagesDiv = $('#messages');
+        const messageForm = $('#messageForm');
+        const messageInput = $('#messageInput');
+
+
+        function showNotification(message) {
+            if (Notification.permission === 'granted') {
+                new Notification('New Message', { body: message });
+            }
+        }
+        
+        messageForm.submit(function (e) {
+            e.preventDefault();
+            const message = messageInput.val();
+
+            $.ajax({
+                url: '/send-message',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ message }),
+                success: function () {
+                },
+                error: function (error) {
+                    console.error('Error sending message:', error);
+                }
+            });
+
+            messageInput.val('');
+        });
+
+        function longPolling() {
+
+            if (Notification.permission !== 'granted') {
+                Notification.requestPermission();
+            }
+
+            $.get('/get-messages', function (newMessages) {
+                newMessages.forEach(function (message) {
+                    const messageElement = $('<div class="row justify-content-md-center"></div>').text(`${message.text} (${new Date(message.timestamp).toLocaleTimeString()})`);
+                    messagesDiv.append(messageElement);
+                    showNotification(message);
+                });
+
+                longPolling();
+            }).fail(function (error) {
+                console.error('Error fetching messages:', error);
+            });
+        }
+
+        longPolling();
+    });
+    </script>
+</body>
+</html>

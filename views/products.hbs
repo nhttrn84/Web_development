@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Management</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Categories Table</h1>
+
+        <button class="btn btn-success mb-3" data-toggle="modal" data-target="#addCategoryModal">
+            Add Categories
+        </button>
+
+        <div class="category">
+        {{#each result}}
+            <td>{{this.Category.CatID}}</td>
+            <td>{{this.Category.CatName}}</td>
+            <td>
+                <button class="btn btn-warning btn-sm" onclick="editCategory('{{this.Category.CatID}}', '{{this.Category.CatName}}')">Edit</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteCategory('{{this.Category.CatID}}')">Delete</button>
+            </td>
+            <table class="table">
+            <thead>
+                <tr>
+                    <th>Product ID</th>
+                    <th>Product Name</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each this.Products}}
+                    <tr>
+                        <td>{{this.ProID}}</td>
+                        <td>{{this.ProName}}</td>
+                        <td>{{this.Price}}</td>
+                        <td>{{this.Quantity}}</td>
+                    </tr>
+                {{/each}}
+            </tbody>
+            </table>
+        {{/each}}
+        </div>
+    </div>
+
+    <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCategoryModalLabel">Add Category</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="addCategoryForm">
+                        <div class="form-group">
+                            <label for="categoryName">Category Name:</label>
+                            <input type="text" class="form-control" id="categoryName" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Category</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editCategoryModal" tabindex="-1" role="dialog" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCategoryModalLabel">Add Category</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editCategoryForm">
+                        <div class="form-group">
+                            <label for="categoryName">Category Name:</label>
+                            <input type="text" class="form-control" id="editCategoryName" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Edit Category</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#addCategoryForm').submit(function (e) {
+                e.preventDefault();
+                const categoryName = $('#categoryName').val();
+
+                if (categoryName) {
+                    const newCategory = {
+                        CatName: categoryName
+                    };
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/add-category',
+                        data: newCategory,
+                        success: function (response) {
+                            location.reload();
+                        },
+                        error: function (error) {
+                            console.error('Error adding category:', error);
+                            alert('Error adding category. Please try again.');
+                        }
+                    });
+
+                    $('#addCategoryModal').modal('hide');
+                } else {
+                    alert('Invalid input. Please enter valid category name.');
+                }
+            });
+
+            window.editCategory = function (catId, catName) {
+                $('#editCategoryName').val(catName);
+                $('#editCategoryModal').modal('show');
+
+                $('#editCategoryForm').submit(function (e) {
+                    e.preventDefault();
+                    const newCategoryName = $('#editCategoryName').val();
+                    if (newCategoryName) {
+                        const updatedCategory = {
+                            CatID: catId,
+                            CatName: newCategoryName
+                        };
+
+                        $.ajax({
+                            type: 'POST',
+                            url: '/edit-category',
+                            data: updatedCategory,
+                            success: function (response) {
+                                location.reload();
+                            },
+                            error: function (error) {
+                                console.error('Error editing category:', error);
+                                alert('Error editing category. Please try again.');
+                            }
+                        });
+
+                        $('#editCategoryModal').modal('hide');
+                    } else {
+                        alert('Invalid input. Please enter a valid category name.');
+                    }
+                });
+            };
+
+            window.deleteCategory = function (catId) {
+                const removedCategory = {
+                    CatID: catId
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/remove-category',
+                    data: removedCategory,
+                    success: function (response) {
+                        location.reload();
+                    },
+                    error: function (error) {
+                        console.error('Error adding category:', error);
+                        alert('Error adding category. Please try again.');
+                    }
+                });
+            };
+        });
+    </script>
+
+</body>
+</html>

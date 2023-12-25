@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QLBH - Chat with Socket.IO</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.socket.io/4.1.2/socket.io.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="row justify-content-md-center">Socket.io</h1>
+        <div id="messagesS" class="col"></div>
+        <form id="messageFormS" class="row justify-content-md-center">
+            <input type="text" id="msg"/>
+            <button type="submit">Gửi</button>
+        </form>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            const messagesDiv = $('#messagesS');
+            const messageForm = $('#messageFormS');
+            const messageInput = $('#msg');
+
+            const socket = new io();
+
+            messageForm.submit(function (e) {
+                e.preventDefault();
+                const message = messageInput.val();
+                socket.emit('channel1', message);
+
+                messageInput.val('');
+            });
+
+            function showNotification(message) {
+                if (Notification.permission === 'granted') {
+                    new Notification('New Message', { body: message });
+                }
+            }
+
+            if (Notification.permission !== 'granted') {
+                Notification.requestPermission();
+            }
+
+            socket.on('channel1', function (msg) {
+                const messageElement = $('<div class="row justify-content-md-center"></div>').text(`${msg} (${new Date().toLocaleTimeString()})`);
+                messagesDiv.append(messageElement);
+
+                showNotification(msg);
+            });
+        });
+    </script>
+</body>
+</html>
